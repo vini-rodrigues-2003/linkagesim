@@ -1,0 +1,31 @@
+Package: linkagesim
+Type: Package
+Title: Simulacao e Validacao de Record Linkage para Bases do SUS
+Version: 0.1.0
+Authors@R: person(
+    given = "Vinicius",
+    family = "Rodrigues-Soares",
+    email = "rodrigues@usp.br",
+    role = c("aut", "cre"),
+    comment = c(ORCID = "0009-0005-2312-9274"))
+Description: Gera bancos sinteticos com inconsistencias controladas (ausencias,
+    abreviacoes, erros de digitacao, formatos de data heterogeneos, CNS
+    divergentes) a partir de uma base de pessoas conhecida, executa o
+    relacionamento probabilistico com blocking multi-passo e escore de
+    Fellegi-Sunter, e mede sensibilidade, valor preditivo positivo e F1 contra a
+    verdade conhecida. Voltado a calibracao de linkage entre bases do Sistema
+    Unico de Saude, como SINAN e o registro de imunizacoes.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Imports: data.table (>= 1.14.0), stringi, stringdist, stats
+VignetteBuilder: knitr
+Suggests: testthat (>= 3.0.0), knitr, rmarkdown
+Config/testthat/edition: 3
+RoxygenNote: 7.3.1
+URL: https://github.com/vini-rodrigues-2003/linkagesim
+BugReports: https://github.com/vini-rodrigues-2003/linkagesim/issues
+NeedsCompilation: no
+Packaged: 2026-08-23 20:13:35 UTC; root
+Author: Rodrigues-Soares [aut, cre] (<https://orcid.org/0009-0005-2312-9274>)
+Maintainer: Rodrigues-Soares <rodrigues_vinicius@usp.br>

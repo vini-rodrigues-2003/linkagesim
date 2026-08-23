@@ -1,0 +1,87 @@
+---
+title: "Simulando e validando um linkage"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simulando e validando um linkage}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r setup}
+library(linkagesim)
+```
+
+## O problema
+
+Ao relacionar duas bases administrativas de saúde não se sabe quantos pares
+verdadeiros existem, então não há como medir a sensibilidade do algoritmo. A
+saída é construir um cenário em que a resposta é conhecida: gerar
+identificadores sintéticos, decidir de antemão quais pessoas aparecem nos dois
+bancos, sujar os dados de forma controlada e verificar quantas dessas pessoas o
+algoritmo reencontra.
+
+## Montando os bancos
+
+```{r}
+dicionario <- list(
+  masc       = c("Joao", "Pedro", "Carlos", "Lucas", "Rafael"),
+  fem        = c("Maria", "Ana", "Julia", "Camila", "Beatriz"),
+  sobrenomes = c("Silva", "Santos", "Souza", "Lima", "Costa")
+)
+
+base <- ln_gerar_base_comum(n = 2000, dicionario)
+head(base, 3)
+```
+
+O ruído é parametrizado:
+
+```{r}
+par <- ln_par_ruido(p_mae_vazio = 0.08, p_nome_typo = 0.05)
+str(par[1:6])
+```
+
+```{r}
+sinan  <- ln_criar_banco(20000, base, "SINAN_EXCL",  dicionario, par, semente = 43)
+vacina <- ln_criar_banco(60000, base, "VACINA_EXCL", dicionario, par, semente = 42)
+head(sinan[, .(nome_paciente, nome_mae, data_nasc)], 5)
+```
+
+Repare que as datas saem em formatos diferentes de propósito, e que a mesma
+pessoa aparece com grafias distintas em cada banco.
+
+## Executando e validando
+
+```{r}
+res <- ln_pipeline(sinan, vacina, limiar = 14, verbose = FALSE)
+ln_avaliar(res$pares, res$pessoas_a, res$pessoas_b)
+```
+
+Quando a sensibilidade decepciona, `ln_diagnosticar_perdas()` separa as perdas
+ocorridas no blocking — o par nunca chegou a ser comparado — das ocorridas no
+escore:
+
+```{r}
+ln_diagnosticar_perdas(res$pares, res$comparacoes, res$pessoas_a, res$pessoas_b)
+```
+
+Perda no blocking pede um passo novo; perda no escore pede outro limiar ou
+outros pesos.
+
+## Escolhendo o limiar
+
+```{r}
+cal <- ln_calibrar_limiar(res$comparacoes, res$pessoas_a, res$pessoas_b,
+                          criterio = "f1")
+cal$limiar
+cal$grade[limiar %in% 10:20]
+```
+
+E, ao passar para bancos maiores:
+
+```{r}
+cal$ajuste_escala(nrow(res$pessoas_a) * 10, nrow(res$pessoas_b) * 10)
+```

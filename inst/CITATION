@@ -1,0 +1,10 @@
+citHeader("Para citar o linkagesim:")
+
+bibentry(
+  bibtype  = "Manual",
+  title    = "linkagesim: Simulacao e Validacao de Record Linkage para Bases do SUS",
+  author   = person("Vinicius", "Rodrigues-Soares"),
+  year     = "2026",
+  note     = "R package version 0.1.0",
+  url      = "https://github.com/vini-rodrigues-2003/linkagesim"
+)
