@@ -5,7 +5,7 @@ Version: 0.1.0
 Authors@R: person(
     given = "Vinicius",
     family = "Rodrigues-Soares",
-    email = "rodrigues@usp.br",
+    email = "rodrigues_vinicius@usp.br",
     role = c("aut", "cre"),
     comment = c(ORCID = "0009-0005-2312-9274"))
 Description: Gera bancos sinteticos com inconsistencias controladas (ausencias,
